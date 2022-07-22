@@ -74,19 +74,23 @@ export CMSIS_ROOT
 SRCS  = main.c
 SRCS += freertos_tickless.c
 SRCS += stack_dats.c
-SRCS += dats_main.c
+SRCS += tin_can_main.c
 SRCS += main_app.c
-#SRCS += custom_service.c
+SRCS += tin_can_service.c
+SRCS += tin_can_profile.c
 #SRCS += sla_header.c
 
 # Where to find source files for this test
 VPATH=.
 VPATH += $(CMSIS_ROOT)/Device/Maxim/$(TARGET_UC)/Source
 VPATH += main_app
-
+VPATH += service
+VPATH += profile
 # Where to find header files for this test
 IPATH = .
 IPATH += main_app
+IPATH += service
+IPATH += profile
 # Unset PROJ_CFLAGS variable
 PROJ_CFLAGS =
 

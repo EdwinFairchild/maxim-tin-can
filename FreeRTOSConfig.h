@@ -69,7 +69,7 @@ increase the amount of time spent in standby mode, thus reducing average power c
 
 #define configTOTAL_HEAP_SIZE       ((size_t)(108 * 1024))
 
-#define configMINIMAL_STACK_SIZE    ((unsigned short)128)
+#define configMINIMAL_STACK_SIZE    ((unsigned short)428)
 
 #define configUSE_PREEMPTION        1
 #define configUSE_IDLE_HOOK         0
@@ -77,10 +77,10 @@ increase the amount of time spent in standby mode, thus reducing average power c
 #define configUSE_CO_ROUTINES       0
 #define configUSE_16_BIT_TICKS      0
 #define configUSE_MUTEXES           1
-
+#define configUSE_TASK_NOTIFICATIONS 1
 /* Define to trap errors during development. */
-void vAssertCalled( const char * const pcFileName, unsigned long ulLine );
-#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __FILE__, __LINE__ )
+// void vAssertCalled( const char * const pcFileName, unsigned long ulLine );
+// #define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __FILE__, __LINE__ )
 
 #define configUSE_TIMERS                1
 #define configTIMER_TASK_PRIORITY       (configMAX_PRIORITIES - 3)
