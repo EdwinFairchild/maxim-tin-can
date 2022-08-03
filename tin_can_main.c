@@ -53,6 +53,16 @@
 #include "task.h"
 #include "tin_can_service.h"
 #include "tin_can_profile.h"
+// WDXS related headers
+#include "svc_wdxs.h"
+#include "wdxs/wdxs_api.h"
+#include "wdxs/wdxs_main.h"
+#include "wdxs/wdxs_stream.h"
+#include "wdxs_file.h"
+#include "board.h"
+#include "flc.h"
+#include "wsf_cs.h"
+#include "Ext_Flash.h"
 #define BT_VER 9
 /**************************************************************************************************
   Macros
@@ -81,6 +91,7 @@
 extern TaskHandle_t button_actions_hdl;
 /*! Enumeration of client characteristic configuration descriptors */
 enum {
+    
     DATS_GATT_SC_CCC_IDX,           /*! GATT service, service changed characteristic */
     DATS_WP_DAT_CCC_IDX,            /*! Arm Ltd. proprietary service, data transfer characteristic */
     TINCAN_BUTTON_CCC_IDX,

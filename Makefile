@@ -74,6 +74,7 @@ export CMSIS_ROOT
 SRCS  = main.c
 SRCS += freertos_tickless.c
 SRCS += stack_dats.c
+SRCS += wdxs_file.c
 SRCS += tin_can_main.c
 SRCS += main_app.c
 SRCS += tin_can_service.c
