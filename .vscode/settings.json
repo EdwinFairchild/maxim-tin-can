@@ -96,6 +96,10 @@
     ],
     "C_Cpp.default.defines": [
         "${config:board}"
-    ]
+    ],
+    "files.associations": {
+        "main_app.h": "c",
+        "tin_can_service.h": "c"
+    }
 }
 
