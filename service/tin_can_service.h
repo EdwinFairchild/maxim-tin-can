@@ -14,7 +14,9 @@
 #define TIN_CAN_SERVICE_UUID_PARTIAL 0xFC85 
 
 #define BUTTON_VALUE_CHART_PARTIAL 0x1230
-/* Builds UUIDS from ARM base UUID and a unique partial */
+/*Builds UUIDS from a defined base UUID
+ base UUID and a unique partial , base must be 14 bytes and partial 2 bytes 
+ or any combination adding up to 16 bytes*/
 #define UUID_BUILD(part)            UINT16_TO_BYTES(part), TIN_CAN_SERVICE_UUID_BASE
 
 #define BUTTON_VALUE_CHART_UUID   UUID_BUILD(BUTTON_VALUE_CHART_PARTIAL)
