@@ -54,9 +54,9 @@ void createAppTasks(void)
 	if (status != pdPASS)
 		APP_TRACE_INFO0("Error creating LED task task\n");
 
-    status = xTaskCreate(button_1_task, "LED", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &button_1_handle);
-	if (status != pdPASS)
-		APP_TRACE_INFO0("Error creating LED task task\n");
+    // status = xTaskCreate(button_1_task, "LED", configMINIMAL_STACK_SIZE, NULL, tskIDLE_PRIORITY, &button_1_handle);
+	// if (status != pdPASS)
+	// 	APP_TRACE_INFO0("Error creating LED task task\n");
 
 }
 

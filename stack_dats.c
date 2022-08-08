@@ -146,6 +146,7 @@ void StackInitDats(void)
 
     handlerId = WsfOsSetNextHandler(DatsHandler);
     DatsHandlerInit(handlerId);
+    WdxsHandlerInit(handlerId);
 }
 
 /*************************************************************************************************/
