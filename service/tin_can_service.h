@@ -8,11 +8,17 @@
 #include "util/bstream.h"
 #include "att_api.h"
 
-#define TIN_CAN_SERVICE_UUID 0xBE, 0xC5, 0xD1, 0x24, 0x99, 0x33, 0xC6, 0x87, 0x85, 0x41, 0xD9, 0x31, 0x7D, 0x56, 0xFC, 0x85 
 
-#define BUTTON_VALUE_CHART_PARTIAL 0x123
+#define TIN_CAN_SERVICE_UUID_BASE 0xBE, 0xC5, 0xD1, 0x24, 0x99, 0x33, 0xC6, 0x87, 0x85, 0x41, 0xD9, 0x31, 0x7D, 0x56
+
+#define TIN_CAN_SERVICE_UUID_PARTIAL 0xFC85 
+
+#define BUTTON_VALUE_CHART_PARTIAL 0x1230
 /* Builds UUIDS from ARM base UUID and a unique partial */
-#define BUTTON_VALUE_CHART_UUID   ATT_UUID_ARM_BUILD(0x100)
+#define UUID_BUILD(part)            UINT16_TO_BYTES(part), TIN_CAN_SERVICE_UUID_BASE
+
+#define BUTTON_VALUE_CHART_UUID   UUID_BUILD(BUTTON_VALUE_CHART_PARTIAL)
+#define TIN_CAN_SERVICE_UUID     UUID_BUILD(TIN_CAN_SERVICE_UUID_PARTIAL)
 
 
 #define START_HDL 0x1000 /* arbitrary numbver chosen */
