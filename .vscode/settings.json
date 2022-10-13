@@ -100,6 +100,7 @@
     "files.associations": {
         "main_app.h": "c",
         "tin_can_service.h": "c"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
 

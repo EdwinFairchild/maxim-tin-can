@@ -53,6 +53,16 @@
 #include "task.h"
 #include "tin_can_service.h"
 #include "tin_can_profile.h"
+// WDXS related headers
+#include "svc_wdxs.h"
+#include "wdxs/wdxs_api.h"
+#include "wdxs/wdxs_main.h"
+#include "wdxs/wdxs_stream.h"
+#include "wdxs_file.h"
+#include "board.h"
+#include "flc.h"
+#include "wsf_cs.h"
+#include "Ext_Flash.h"
 #define BT_VER 9
 /**************************************************************************************************
   Macros
@@ -81,6 +91,10 @@
 extern TaskHandle_t button_actions_hdl;
 /*! Enumeration of client characteristic configuration descriptors */
 enum {
+    WDXS_DC_CH_CCC_IDX,   /*! WDXS DC service, service changed characteristic */
+    WDXS_FTC_CH_CCC_IDX,  /*! WDXS FTC  service, service changed characteristic */
+    WDXS_FTD_CH_CCC_IDX,  /*! WDXS FTD service, service changed characteristic */
+    WDXS_AU_CH_CCC_IDX,   /*! WDXS AU service, service changed characteristic */
     DATS_GATT_SC_CCC_IDX,           /*! GATT service, service changed characteristic */
     DATS_WP_DAT_CCC_IDX,            /*! Arm Ltd. proprietary service, data transfer characteristic */
     TINCAN_BUTTON_CCC_IDX,
@@ -210,7 +224,12 @@ static const attsCccSet_t datsCccSet[DATS_NUM_CCC_IDX] = {
     /* cccd handle          value range               security level */
     {GATT_SC_CH_CCC_HDL,    ATT_CLIENT_CFG_INDICATE,  DM_SEC_LEVEL_NONE},   /* DATS_GATT_SC_CCC_IDX */
     {WP_DAT_CH_CCC_HDL,     ATT_CLIENT_CFG_NOTIFY,    DM_SEC_LEVEL_NONE},   /* DATS_WP_DAT_CCC_IDX */
-    {BUTTON_CH_CCC_HDL,     ATT_CLIENT_CFG_NOTIFY,    DM_SEC_LEVEL_NONE}    /* DATS_WP_DAT_CCC_IDX */
+    {BUTTON_CH_CCC_HDL,     ATT_CLIENT_CFG_NOTIFY,    DM_SEC_LEVEL_NONE},   /* DATS_WP_DAT_CCC_IDX */
+    {WDXS_DC_CH_CCC_HDL, ATT_CLIENT_CFG_NOTIFY, DM_SEC_LEVEL_NONE},   /* WDXS_DC_CH_CCC_IDX */
+    {WDXS_FTC_CH_CCC_HDL, ATT_CLIENT_CFG_NOTIFY, DM_SEC_LEVEL_NONE},  /* WDXS_FTC_CH_CCC_IDX */
+    {WDXS_FTD_CH_CCC_HDL, ATT_CLIENT_CFG_NOTIFY, DM_SEC_LEVEL_NONE},  /* WDXS_FTD_CH_CCC_IDX */
+    {WDXS_AU_CH_CCC_HDL, ATT_CLIENT_CFG_NOTIFY, DM_SEC_LEVEL_NONE}    /* WDXS_AU_CH_CCC_IDX */
+    
 };
 
 
@@ -313,6 +332,7 @@ static void datsAttCback(attEvt_t *pEvt)
         memcpy(pMsg->pValue, pEvt->pValue, pEvt->valueLen);
         WsfMsgSend(datsCb.handlerId, pMsg);
     }
+    WdxsAttCback(pEvt);
 }
 
 /*************************************************************************************************/
@@ -912,11 +932,31 @@ void DatsHandler(wsfEventMask_t event, wsfMsgHdr_t *pMsg)
 
             /* process security-related messages */
             AppSlaveSecProcDmMsg((dmEvt_t *) pMsg);
+
+            /* process WDXS-related messages */
+            WdxsProcDmMsg((dmEvt_t*)pMsg);
         }
 
         /* perform profile and user interface-related operations */
         datsProcMsg((dmEvt_t *) pMsg);
     }
+}
+
+/*************************************************************************************************/
+/*!
+ *  \brief  Resets the system.
+ *
+ *  \return None.
+ */
+/*************************************************************************************************/
+void WdxsResetSystem(void)
+{
+    APP_TRACE_INFO0("Reseting!");
+    /* Wait for the console to finish printing */
+    volatile int i;
+    for (i = 0; i < 0xFFFFF; i++) {
+    }
+    NVIC_SystemReset();
 }
 
 /*************************************************************************************************/
@@ -949,6 +989,16 @@ void DatsStart(void)
 
     /* Register for app framework button callbacks */
     AppUiBtnRegister(datsBtnCback);
+    /* Initialize the WDXS File */
+    WdxsFileInit();
+
+    /* Set the WDXS CCC Identifiers */
+    WdxsSetCccIdx(WDXS_DC_CH_CCC_IDX, WDXS_AU_CH_CCC_IDX, WDXS_FTC_CH_CCC_IDX, WDXS_FTD_CH_CCC_IDX);
+
+#if (BT_VER > 8)
+    WdxsPhyInit();
+#endif /* BT_VER */
+
 
 #if (BT_VER > 8)
     DmPhyInit();
